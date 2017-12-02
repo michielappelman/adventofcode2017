@@ -39,3 +39,4 @@ func main() {
 }
 EOF
 
+git add .
