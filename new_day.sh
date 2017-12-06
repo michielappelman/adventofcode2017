@@ -38,7 +38,7 @@ func main() {
 }
 EOF
 
-cat <<EOF > $DAYNAME_test.go
+cat <<EOF > ${DAYNAME}_test.go
 package main
 
 import (

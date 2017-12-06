@@ -39,14 +39,6 @@ func StarTwo(input string) int {
 	return generic.Sum(doubles)
 }
 
-func Sum(list []int) int {
-	var sum int
-	for _, num := range list {
-		sum += num
-	}
-	return sum
-}
-
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
