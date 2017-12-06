@@ -4,11 +4,7 @@
 echo "What date are you going to solve today?"
 read day
 
-if [ $day -le 9 ] ; then
-    DAYNAME=day0$day
-else
-    DAYNAME=day$day
-fi
+DAYNAME=day$day
 
 if [ -d $DAYNAME ] ; then
     echo "Directory $DAYNAME exists!"
@@ -17,26 +13,74 @@ fi
 
 mkdir $DAYNAME
 cd $DAYNAME
-cat <<EOF > main.go
+cat <<EOF > $DAYNAME.go
 package main
 
 import (
-	"github.com/michielappelman/adventofcode2016/generic"
+	"github.com/michielappelman/adventofcode2017/generic"
 )
 
-func main() {
-	args := os.Args
-	if len(args) < 2 {
-		log.Fatal("Input filename not given...")
-	}
-
-	input_lines := generic.LoadLines(args[1])
-	instructions := generic.SplitLine(input_lines[0], ", ")
-
+func StarOne(input string) int {
     ...
+}
 
-	fmt.Println("Star 1:", dist)
+//func StarTwo(input string) int {
+//    ...
+//}
+
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		input := scanner.Text()
+		fmt.Println("1:", StarOne(input))
+		fmt.Println("2:", StarTwo(input))
+	}
 }
 EOF
 
-git add .
+cat <<EOF > $DAYNAME_test.go
+package main
+
+import (
+	"testing"
+)
+
+func TestStarOne(t *testing.T) {
+	tests := []struct {
+		input string
+		want  int
+	}{
+		{"1122", 3},
+		{"1111", 4},
+		{"1234", 0},
+		{"91212129", 9},
+		{"6644789", 10},
+		{"578444444785", 25},
+	}
+	for _, test := range tests {
+		got := StarOne(test.input)
+		if got != test.want {
+			t.Errorf("for %s got %d, want %d", test.input, got, test.want)
+		}
+	}
+}
+
+//func TestStarTwo(t *testing.T) {
+//	tests := []struct {
+//		input string
+//		want  int
+//	}{
+//		{"1212", 6},
+//		{"1221", 0},
+//		{"123425", 4},
+//		{"123123", 12},
+//		{"12131415", 4},
+//	}
+//	for _, test := range tests {
+//		got := StarTwo(test.input)
+//		if got != test.want {
+//			t.Errorf("for %s got %d, want %d", test.input, got, test.want)
+//		}
+//	}
+//}
+EOF
