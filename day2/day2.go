@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/michielappelman/adventofcode2017/generic"
@@ -34,14 +33,7 @@ func StarTwo(spreadsheet [][]string) int {
 }
 
 func diffMinMax(row []string) int {
-	var rowInts []int
-	for _, c := range row {
-		toInt, err := strconv.Atoi(c)
-		if err != nil {
-			continue
-		}
-		rowInts = append(rowInts, toInt)
-	}
+	rowInts := generic.StringsToInts(row)
 	sort.Ints(rowInts)
 	min := rowInts[0]
 	max := rowInts[len(rowInts)-1]
@@ -49,14 +41,7 @@ func diffMinMax(row []string) int {
 }
 
 func findEvenDividers(row []string) int {
-	var rowInts []int
-	for _, c := range row {
-		toInt, err := strconv.Atoi(c)
-		if err != nil {
-			continue
-		}
-		rowInts = append(rowInts, toInt)
-	}
+	rowInts := generic.StringsToInts(row)
 	sort.Sort(sort.Reverse(sort.IntSlice(rowInts)))
 	for i := range rowInts {
 		for j := i + 1; j < len(rowInts); j++ {
