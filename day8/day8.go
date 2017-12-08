@@ -9,6 +9,20 @@ import (
 	"strconv"
 )
 
+const (
+	dec = -1
+	inc = 1
+)
+
+const (
+	EQ = iota
+	NE
+	GT
+	GE
+	LT
+	LE
+)
+
 type Op int
 type Comp int
 
@@ -24,20 +38,6 @@ type Instruction struct {
 	amount    int
 	condition *Condition
 }
-
-const (
-	dec = -1
-	inc = 1
-)
-
-const (
-	EQ = iota
-	NE
-	GT
-	GE
-	LT
-	LE
-)
 
 func (i Instruction) Execute(registers map[string]int) {
 	if i.condition.Test(registers) {
@@ -65,41 +65,9 @@ func (c Condition) Test(registers map[string]int) bool {
 }
 
 func StarOne(input []string) int {
-	var instructions []*Instruction
+	instructions := getInstructions(input)
 	registers := make(map[string]int)
 
-	var compConsts = map[string]Comp{
-		"==": 0,
-		"!=": 1,
-		">":  2,
-		">=": 3,
-		"<":  4,
-		"<=": 5,
-	}
-
-	reI := regexp.MustCompile(`(\w+) (\w+) ([0-9-]+) if (\w+) (.+) ([0-9-]+)`)
-	for _, line := range input {
-		result := reI.FindStringSubmatch(line)
-		register := result[1]
-		var op Op
-		if result[2] == "inc" {
-			op = inc
-		} else {
-			op = dec
-		}
-		amount, err := strconv.Atoi(result[3])
-		if err != nil {
-			log.Fatalf("%s not an integer", result[3])
-		}
-
-		val, err := strconv.Atoi(result[6])
-		if err != nil {
-			log.Fatalf("%s not an integer", result[6])
-		}
-		condition := &Condition{result[4], compConsts[result[5]], val}
-		instructions = append(instructions, &Instruction{register, op, amount, condition})
-
-	}
 	for _, i := range instructions {
 		i.Execute(registers)
 	}
@@ -113,9 +81,23 @@ func StarOne(input []string) int {
 }
 
 func StarTwo(input []string) int {
-	var instructions []*Instruction
+	instructions := getInstructions(input)
 	registers := make(map[string]int)
 
+	var highest int
+	for _, i := range instructions {
+		i.Execute(registers)
+		for _, v := range registers {
+			if v > highest {
+				highest = v
+			}
+		}
+	}
+	return highest
+}
+
+func getInstructions(input []string) []*Instruction {
+	var instructions []*Instruction
 	var compConsts = map[string]Comp{
 		"==": 0,
 		"!=": 1,
@@ -148,16 +130,7 @@ func StarTwo(input []string) int {
 		instructions = append(instructions, &Instruction{register, op, amount, condition})
 
 	}
-	var highest int
-	for _, i := range instructions {
-		i.Execute(registers)
-		for _, v := range registers {
-			if v > highest {
-				highest = v
-			}
-		}
-	}
-	return highest
+	return instructions
 }
 
 func main() {
