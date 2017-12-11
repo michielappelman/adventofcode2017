@@ -28,3 +28,23 @@ func Abs(i int) int {
 	}
 	return i
 }
+
+func IndexOfMax(list []int) int {
+	var highest int
+	for i, v := range list {
+		if v > list[highest] {
+			highest = i
+		}
+	}
+	return highest
+}
+
+func Max(list []int) int {
+	var highest int
+	for v := range list {
+		if v > highest {
+			highest = v
+		}
+	}
+	return highest
+}
