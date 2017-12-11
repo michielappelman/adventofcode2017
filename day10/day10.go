@@ -69,7 +69,11 @@ func StarTwo(input string, size int) string {
 	}
 	var hex string
 	for i := 0; i < size; i += 16 {
-		hex += fmt.Sprintf("%02x", s[i+0]^s[i+1]^s[i+2]^s[i+3]^s[i+4]^s[i+5]^s[i+6]^s[i+7]^s[i+8]^s[i+9]^s[i+10]^s[i+11]^s[i+12]^s[i+13]^s[i+14]^s[i+15])
+		var xor int
+		for j := 0; j < 16; j++ {
+			xor ^= s[i+j]
+		}
+		hex += fmt.Sprintf("%02x", xor)
 	}
 	return hex
 }
