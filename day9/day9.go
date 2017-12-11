@@ -63,11 +63,9 @@ func deleteGarbage(input string) (string, int) {
 	result := re.ReplaceAllString(input, "")
 	var garbage int
 	matches := re.FindAllStringSubmatch(input, -1)
-	if len(matches) > 0 {
-		for _, g := range matches {
-			for _, m := range g[1:] {
-				garbage += len(m)
-			}
+	for _, g := range matches {
+		for _, m := range g[1:] {
+			garbage += len(m)
 		}
 	}
 	return result, garbage
