@@ -27,3 +27,22 @@ func TestStarOne(t *testing.T) {
 		}
 	}
 }
+
+func TestStarTwo(t *testing.T) {
+	tests := []struct {
+		input string
+		want  int
+	}{
+		{"{<>}", 0},
+		{"{}{<akl>}", 3},
+		{"{{{<!!>}}}", 0},
+		{"{{},{<!>>}}", 0},
+		{"{{},{<a!>>}}", 1},
+	}
+	for _, test := range tests {
+		got := StarTwo(test.input)
+		if got != test.want {
+			t.Errorf("for %s got %d, want %d", test.input, got, test.want)
+		}
+	}
+}

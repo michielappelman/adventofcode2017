@@ -11,9 +11,15 @@ import (
 
 func StarOne(input string) int {
 	noExcl := deleteExclamations(input)
-	noGbg := deleteGarbage(noExcl)
+	noGbg, _ := deleteGarbage(noExcl)
 	sumGroups := countGroups(noGbg)
 	return sumGroups
+}
+
+func StarTwo(input string) int {
+	noExcl := deleteExclamations(input)
+	_, gl := deleteGarbage(noExcl)
+	return gl
 }
 
 func countGroups(input string) int {
@@ -46,17 +52,25 @@ func deleteExclamations(input string) string {
 		}
 		if r == '!' {
 			rd.Discard(1)
-		} else if r == ',' {
-			continue
 		} else {
 			result += string(r)
 		}
 	}
 }
 
-func deleteGarbage(input string) string {
-	re := regexp.MustCompile(`<.*?>`)
-	return re.ReplaceAllString(input, "")
+func deleteGarbage(input string) (string, int) {
+	re := regexp.MustCompile(`<(.*?)>`)
+	result := re.ReplaceAllString(input, "")
+	var garbage int
+	matches := re.FindAllStringSubmatch(input, -1)
+	if len(matches) > 0 {
+		for _, g := range matches {
+			for _, m := range g[1:] {
+				garbage += len(m)
+			}
+		}
+	}
+	return result, garbage
 }
 
 func main() {
@@ -64,6 +78,6 @@ func main() {
 	for scanner.Scan() {
 		input := scanner.Text()
 		fmt.Println("1:", StarOne(input))
-		//fmt.Println("2:", StarTwo(input))
+		fmt.Println("2:", StarTwo(input))
 	}
 }
