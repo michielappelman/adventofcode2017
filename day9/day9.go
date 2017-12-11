@@ -12,19 +12,14 @@ import (
 func StarOne(input string) int {
 	noExcl := deleteExclamations(input)
 	noGbg := deleteGarbage(noExcl)
-	sumGroups := countGroups(noGbg, 0)
+	sumGroups := countGroups(noGbg)
 	return sumGroups
 }
 
-func countGroups(input string, myVal int) int {
-	if len(input) == 0 {
-		return myVal
-	}
-	sum := myVal
+func countGroups(input string) int {
+	var sum, count int
 
 	rd := bufio.NewReader(strings.NewReader(input))
-	var open int
-	var new string
 	for {
 		r, _, err := rd.ReadRune()
 		if err == io.EOF {
@@ -32,18 +27,10 @@ func countGroups(input string, myVal int) int {
 		}
 		switch r {
 		case '{':
-			if open > 0 {
-				new += string(r)
-			}
-			open++
+			count++
+			sum += count
 		case '}':
-			open--
-			if open > 0 {
-				new += string(r)
-			}
-			if open == 0 {
-				sum += countGroups(new, myVal+1)
-			}
+			count--
 		}
 	}
 }
