@@ -117,13 +117,7 @@ func surroundingSum(x, y int, grid *map[int]map[int]int) int {
 }
 
 func distance(x, y int) int {
-	if x < 0 {
-		x *= -1
-	}
-	if y < 0 {
-		y *= -1
-	}
-	return x + y
+	return generic.Abs(x) + generic.Abs(y)
 }
 
 func main() {
