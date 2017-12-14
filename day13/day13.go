@@ -81,31 +81,31 @@ func StarTwo(input string) int {
 		fw[k] = v
 	}
 
-	var delay int
-	for hit := true; hit; delay++ {
-		var new []Layer
+	done := make(chan int)
+	checkHit := func(delay int) {
+		var hit bool
 		for i, f := range fw {
-			new = append(new, f)
-			if f.full {
-				for d := 0; d < delay; d++ {
-					new[i] = new[i].Step()
-				}
+			if !f.full {
+				continue
 			}
-		}
-		hit = false
-		for step := 0; step < len(new); step++ {
-			if new[step].full && new[step].scannerPos == 0 {
-				hit = true
+			hit = (i+delay)%(2*(f.depth-1)) == 0
+			if hit {
 				break
 			}
-			for i, f := range new {
-				if f.full {
-					new[i] = f.Step()
-				}
-			}
+		}
+		if !hit {
+			done <- delay
 		}
 	}
-	return delay - 1
+
+	for delay := 0; ; delay++ {
+		select {
+		case d := <-done:
+			return d
+		default:
+			go checkHit(delay)
+		}
+	}
 }
 
 func main() {
