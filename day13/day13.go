@@ -11,7 +11,6 @@ import (
 type Layer struct {
 	depth      int
 	scannerPos int
-	sev        int
 	back       bool
 }
 
@@ -38,7 +37,7 @@ func StarOne(input string) int {
 		line := strings.Split(lines.Text(), ": ")
 		l, _ := strconv.Atoi(line[0])
 		r, _ := strconv.Atoi(line[1])
-		fwMap[l] = &Layer{r, 0, l * r, false}
+		fwMap[l] = &Layer{r, 0, false}
 		totaldepth = l + 1
 	}
 	fw := make([]*Layer, totaldepth)
@@ -46,18 +45,16 @@ func StarOne(input string) int {
 		fw[k] = v
 	}
 
-	var step int
 	var sev int
-	for _ = range fw {
+	for step := 0; step < len(fw); step++ {
 		if fw[step] != nil && fw[step].scannerPos == 0 {
-			sev += fw[step].sev
+			sev += fw[step].depth * step
 		}
 		for _, f := range fw {
 			if f != nil {
 				f.Step()
 			}
 		}
-		step++
 	}
 	return sev
 }
@@ -70,7 +67,7 @@ func StarTwo(input string) int {
 		line := strings.Split(lines.Text(), ": ")
 		l, _ := strconv.Atoi(line[0])
 		r, _ := strconv.Atoi(line[1])
-		fwMap[l] = &Layer{r, 0, l * r, false}
+		fwMap[l] = &Layer{r, 0, false}
 		totaldepth = l + 1
 	}
 	fw := make([]*Layer, totaldepth)
