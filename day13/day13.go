@@ -77,19 +77,15 @@ func StarTwo(input string) int {
 
 	done := make(chan int)
 	checkHit := func(delay int) {
-		var hit bool
 		for i, f := range fw {
 			if f == nil {
 				continue
 			}
-			hit = (i+delay)%(2*(f.depth-1)) == 0
-			if hit {
-				break
+			if (i+delay)%(2*(f.depth-1)) == 0 {
+				return
 			}
 		}
-		if !hit {
-			done <- delay
-		}
+		done <- delay
 	}
 
 	for delay := 0; ; delay++ {
