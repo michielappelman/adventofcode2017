@@ -13,38 +13,35 @@ type Layer struct {
 	scannerPos int
 	sev        int
 	back       bool
-	full       bool
 }
 
-func (l Layer) Step() Layer {
-	r := Layer{l.depth, l.scannerPos, l.sev, l.back, l.full}
+func (l *Layer) Step() {
 	if l.scannerPos-1 < 0 {
-		r.back = false
+		l.back = false
 	}
 	if l.scannerPos+1 >= l.depth {
-		r.back = true
+		l.back = true
 	}
 
-	if r.back {
-		r.scannerPos--
+	if l.back {
+		l.scannerPos--
 	} else {
-		r.scannerPos++
+		l.scannerPos++
 	}
-	return r
 }
 
 func StarOne(input string) int {
-	fwMap := make(map[int]Layer)
+	fwMap := make(map[int]*Layer)
 	var totaldepth int
 	lines := bufio.NewScanner(strings.NewReader(input))
 	for lines.Scan() {
 		line := strings.Split(lines.Text(), ": ")
 		l, _ := strconv.Atoi(line[0])
 		r, _ := strconv.Atoi(line[1])
-		fwMap[l] = Layer{r, 0, l * r, false, true}
+		fwMap[l] = &Layer{r, 0, l * r, false}
 		totaldepth = l + 1
 	}
-	fw := make([]Layer, totaldepth)
+	fw := make([]*Layer, totaldepth)
 	for k, v := range fwMap {
 		fw[k] = v
 	}
@@ -52,12 +49,12 @@ func StarOne(input string) int {
 	var step int
 	var sev int
 	for _ = range fw {
-		if fw[step].full && fw[step].scannerPos == 0 {
+		if fw[step] != nil && fw[step].scannerPos == 0 {
 			sev += fw[step].sev
 		}
-		for i, f := range fw {
-			if f.full {
-				fw[i] = f.Step()
+		for _, f := range fw {
+			if f != nil {
+				f.Step()
 			}
 		}
 		step++
@@ -66,17 +63,17 @@ func StarOne(input string) int {
 }
 
 func StarTwo(input string) int {
-	fwMap := make(map[int]Layer)
+	fwMap := make(map[int]*Layer)
 	var totaldepth int
 	lines := bufio.NewScanner(strings.NewReader(input))
 	for lines.Scan() {
 		line := strings.Split(lines.Text(), ": ")
 		l, _ := strconv.Atoi(line[0])
 		r, _ := strconv.Atoi(line[1])
-		fwMap[l] = Layer{r, 0, l * r, false, true}
+		fwMap[l] = &Layer{r, 0, l * r, false}
 		totaldepth = l + 1
 	}
-	fw := make([]Layer, totaldepth)
+	fw := make([]*Layer, totaldepth)
 	for k, v := range fwMap {
 		fw[k] = v
 	}
@@ -85,7 +82,7 @@ func StarTwo(input string) int {
 	checkHit := func(delay int) {
 		var hit bool
 		for i, f := range fw {
-			if !f.full {
+			if f == nil {
 				continue
 			}
 			hit = (i+delay)%(2*(f.depth-1)) == 0
