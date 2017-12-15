@@ -13,8 +13,7 @@ const factorB = 48271
 const divConst = 2147483647
 
 type Pair struct {
-	round int
-	a, b  int
+	a, b int
 }
 
 func StarOne(initA, initB int) int {
@@ -22,30 +21,32 @@ func StarOne(initA, initB int) int {
 	pairs := make(chan Pair, 100)
 
 	var count int
+	var round int
 	done := make(chan bool)
 	go func() {
 		for {
+			if round > rounds {
+				done <- true
+			}
 			select {
 			case p := <-pairs:
-				if checkPair(p) && p.round < rounds {
+				if checkPair(p) {
 					count++
 				}
-				if p.round == rounds {
-					done <- true
-				}
+				round++
 			}
 		}
 	}()
 
-	var pair func(round, a, b int)
-	pair = func(round, a, b int) {
-		pairs <- Pair{round, a, b}
-		newA := (a * factorA) % divConst
-		newB := (b * factorB) % divConst
-		go pair(round+1, newA, newB)
+	var pair func(p Pair)
+	pair = func(p Pair) {
+		pairs <- p
+		newA := (p.a * factorA) % divConst
+		newB := (p.b * factorB) % divConst
+		go pair(Pair{newA, newB})
 	}
 
-	go pair(1, initA, initB)
+	go pair(Pair{initA, initB})
 
 	<-done
 	return count
@@ -66,12 +67,12 @@ func StarTwo(initA, initB int) int {
 			}
 			select {
 			case a := <-chanA:
-				if checkPair(Pair{0, a, <-chanB}) {
+				if checkPair(Pair{a, <-chanB}) {
 					count++
 				}
 				round++
 			case b := <-chanB:
-				if checkPair(Pair{0, <-chanA, b}) {
+				if checkPair(Pair{<-chanA, b}) {
 					count++
 				}
 				round++
