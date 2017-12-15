@@ -40,8 +40,8 @@ func StarOne(initA, initB int) int {
 	var pair func(round, a, b int)
 	pair = func(round, a, b int) {
 		pairs <- Pair{round, a, b}
-		newA := genNext(a, factorA)
-		newB := genNext(b, factorB)
+		newA := (a * factorA) % divConst
+		newB := (b * factorB) % divConst
 		go pair(round+1, newA, newB)
 	}
 
@@ -81,7 +81,7 @@ func StarTwo(initA, initB int) int {
 
 	var gen func(x, factor, div int, c chan int)
 	gen = func(x, factor, div int, c chan int) {
-		new := genNext(x, factor)
+		new := (x * factor) % divConst
 		if new%div == 0 {
 			c <- new
 		}
@@ -113,10 +113,6 @@ func checkPair(p Pair) bool {
 		return true
 	}
 	return false
-}
-
-func genNext(prev, factor int) int {
-	return (prev * factor) % divConst
 }
 
 func main() {
