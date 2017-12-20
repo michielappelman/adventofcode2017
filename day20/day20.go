@@ -80,18 +80,14 @@ func StarTwo(input []string) int {
 		for _, s := range seen {
 			if len(s) > 1 {
 				for _, l := range s {
-					p[l] = nil
+					// Delete without preserving order
+					p[l] = p[len(p)-1]
+					p = p[:len(p)-1]
 				}
 			}
 		}
 	}
-	var count int
-	for _, x := range p {
-		if x != nil {
-			count++
-		}
-	}
-	return count
+	return len(p)
 }
 
 func main() {
