@@ -34,7 +34,7 @@ func getNext(y, x int, dir direction, grid [][]string, letters string) (int, int
 			return y, x - 1, direction(W), letters
 		}
 	} else {
-		if rune(l[0]) >= 65 && rune(l[0]) < 91 {
+		if rune(l[0]) >= 'A' && rune(l[0]) <= 'Z' {
 			letters += l
 		}
 		switch dir {
