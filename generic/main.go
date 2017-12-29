@@ -41,7 +41,7 @@ func IndexOfMax(list []int) int {
 
 func Max(list []int) int {
 	var highest int
-	for v := range list {
+	for _, v := range list {
 		if v > highest {
 			highest = v
 		}
